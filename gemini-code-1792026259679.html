@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BC Kinesiología - Turnero</title>
+  <style>
+    /* Estilos Basados en la Identidad Visual de BC Kinesiología */
+    :root {
+      --bg-crema: #F7F2E8;      /* Fondo extraído del logo */
+      --terracota: #C8785E;     /* Botón principal / Mano del logo */
+      --verde-hoja: #8EA885;    /* Aprobación / Hoja del logo */
+      --texto-oscuro: #2B2B2B;  /* Contornos / Texto principal */
+      --blanco: #FFFFFF;
+      --sombre: rgba(0,0,0,0.08);
+    }
+
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0; }
+    body { background-color: var(--bg-crema); color: var(--texto-oscuro); display: flex; justify-content: center; min-height: 100vh; }
+    
+    .mobile-container {
+      width: 100%; max-width: 480px; background: var(--bg-crema); padding: 16px; position: relative; padding-bottom: 80px;
+    }
+
+    /* Header e Identidad Visual */
+    .header { text-align: center; margin-bottom: 20px; padding: 10px 0; border-bottom: 2px solid rgba(200, 120, 94, 0.2); }
+    .header h1 { font-size: 22px; letter-spacing: 1px; color: var(--texto-oscuro); }
+    .header p { font-size: 13px; color: var(--terracota); font-weight: 600; margin-top: 4px; }
+
+    /* Navegación entre Paciente y Admin */
+    .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn { flex: 1; padding: 12px; border: 2px solid var(--terracota); background: transparent; color: var(--terracota); font-weight: bold; border-radius: 12px; font-size: 14px; cursor: pointer; }
+    .tab-btn.active { background: var(--terracota); color: var(--blanco); }
+
+    /* Cards y Formulario */
+    .card { background: var(--blanco); padding: 16px; border-radius: 16px; box-shadow: 0 4px 12px var(--sombre); margin-bottom: 16px; }
+    .card h2 { font-size: 16px; margin-bottom: 12px; color: var(--texto-oscuro); display: flex; align-items: center; gap: 8px; }
+
+    label { font-size: 13px; font-weight: bold; display: block; margin-top: 10px; margin-bottom: 4px; }
+    input, select, textarea {
+      width: 100%; padding: 14px; border: 2px solid #E0E0E0; border-radius: 10px; font-size: 16px; background: #FAFAFA; color: var(--texto-oscuro);
+    }
+    input:focus, textarea:focus { border-color: var(--terracota); outline: none; background: #FFF; }
+
+    /* Selectores de Sesión Accesibles */
+    .radio-option {
+      border: 2px solid #E0E0E0; border-radius: 12px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; cursor: pointer; gap: 12px;
+    }
+    .radio-option.selected { border-color: var(--verde-hoja); background-color: rgba(142, 168, 133, 0.1); }
+    .radio-option input { width: 20px; height: 20px; accent-color: var(--verde-hoja); }
+
+    .info-box { background: rgba(200, 120, 94, 0.1); border-left: 4px solid var(--terracota); padding: 10px; font-size: 12px; margin-top: 8px; border-radius: 4px; }
+
+    /* Botón de Acción Principal */
+    .btn-primary {
+      width: 100%; padding: 16px; background: var(--terracota); color: var(--blanco); border: none; border-radius: 14px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 10px rgba(200, 120, 94, 0.3);
+    }
+
+    /* Botón Flotante de WhatsApp */
+    .whatsapp-btn {
+      position: fixed; bottom: 16px; right: 16px; background: #25D366; color: white; padding: 12px 18px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 100;
+    }
+
+    /* Agenda del Panel de Administrador */
+    .turno-item { border-left: 5px solid var(--terracota); padding: 12px; background: #FAFAFA; border-radius: 8px; margin-bottom: 10px; }
+    .turno-hora { font-weight: bold; color: var(--terracota); font-size: 14px; }
+    .turno-paciente { font-size: 15px; font-weight: bold; margin: 2px 0; }
+    .badge { display: inline-block; padding: 4px 8px; font-size: 11px; font-weight: bold; border-radius: 6px; background: var(--verde-hoja); color: white; margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+<div class="mobile-container">
+
+  <!-- Encabezado con Identidad BC Kinesiología -->
+  <div class="header">
+    <h1>BC KINESIOLOGÍA</h1>
+    <p>Centro de Rehabilitación y Acondicionamiento Físico</p>
+  </div>
+
+  <!-- Pestanias de Navegacion -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" id="btn-paciente" onclick="verVista('paciente')">Pedir Turno</button>
+    <button class="tab-btn" id="btn-admin" onclick="verVista('admin')">Panel Admin</button>
+  </div>
+
+  <!-- ==================== VISTA PACIENTE ==================== -->
+  <div id="vista-paciente">
+    
+    <div class="card">
+      <h2>👤 1. Mis Datos</h2>
+      <label for="nombre">Nombre y Apellido</label>
+      <input type="text" id="nombre" placeholder="Ej: Maria Gonzalez">
+
+      <label for="whatsapp">Teléfono / WhatsApp</label>
+      <input type="tel" id="whatsapp" placeholder="Ej: +54 388 1234567">
+
+      <label for="diagnostico">Ficha de Diagnóstico Médico</label>
+      <input type="text" id="diagnostico" placeholder="Ej: Esguince de tobillo grado 2">
+
+      <label for="dolor">¿Dónde sentís dolor o molestia?</label>
+      <textarea id="dolor" rows="3" placeholder="Describe brevemente el dolor e intensidad..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2>🏥 2. Tipo de Sesión</h2>
+      
+      <div class="radio-option selected" onclick="seleccionarSesion('presencial', this)">
+        <input type="radio" name="sesion" checked>
+        <div>
+          <strong>Sesión Presencial</strong>
+          <div style="font-size:12px; color:#666;">En consultorio</div>
+        </div>
+      </div>
+
+      <div class="radio-option" onclick="seleccionarSesion('online', this)">
+        <input type="radio" name="sesion">
+        <div>
+          <strong>Sesión Online</strong>
+          <div style="font-size:12px; color:#666;">Por videollamada</div>
+        </div>
+      </div>
+
+      <div class="radio-option" onclick="seleccionarSesion('domicilio', this)">
+        <input type="radio" name="sesion">
+        <div>
+          <strong>Sesión a Domicilio</strong>
+          <div style="font-size:12px; color:#666;">Duración: 1 hora 30 min</div>
+        </div>
+      </div>
+
+      <div id="info-domicilio" class="info-box" style="display:none;">
+        📍 <strong>Aclaración A Domicilio:</strong> Debes estar listo/a a la llegada del profesional. El viático de traslado en Uber se confirma con el consultorio al aceptar la visita (el tiempo de viaje no descuenta la sesión).
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>📅 3. Fecha y Horario</h2>
+      <label for="fecha">Día de Atención (Lun a Vier)</label>
+      <input type="date" id="fecha">
+
+      <label for="hora">Horario (09:00 a 18:00 hs)</label>
+      <select id="hora">
+        <option>09:00 hs</option>
+        <option>10:00 hs</option>
+        <option>11:00 hs</option>
+        <option>14:00 hs</option>
+        <option>15:00 hs</option>
+        <option>16:00 hs</option>
+        <option>17:00 hs</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" onclick="guardarTurno()">Confirmar mi Turno</button>
+  </div>
+
+  <!-- ==================== VISTA PANEL ADMINISTRADOR ==================== -->
+  <div id="vista-admin" style="display:none;">
+    
+    <div class="card" style="background:#2B2B2B; color:white;">
+      <h2>🛠️ Ajustes del Creador</h2>
+      <label style="color:#FFF;">Agregar Nuevo Administrador (WhatsApp)</label>
+      <input type="tel" id="nuevo-admin" placeholder="Número de celular">
+      <button class="btn-primary" style="margin-top:8px; padding:10px; background:var(--verde-hoja);" onclick="alert('Permiso otorgado al nuevo administrador')">+ Dar Permiso Admin</button>
+
+      <label style="color:#FFF; margin-top:14px;">WhatsApp Oficial del Centro</label>
+      <input type="tel" id="num-oficial" value="+543881234567">
+    </div>
+
+    <div class="card">
+      <h2>📅 Agenda de Turnos Recibidos</h2>
+      <div id="lista-turnos">
+        <!-- Turnos Cargados Dinámicamente -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Boton Flotante de Asistencia por WhatsApp -->
+  <a href="https://wa.me/543881234567" target="_blank" class="whatsapp-btn">
+    💬 ¿Dudas? Hablá por WhatsApp
+  </a>
+
+</div>
+
+<script>
+  let turnosGuardados = [
+    {
+      nombre: "Juan Pérez",
+      whatsapp: "+543889998877",
+      diagnostico: "Lumbalgia Aguda",
+      dolor: "Dolor punzante 8/10 en zona baja de la espalda al agacharse.",
+      sesion: "Presencial",
+      fecha: "2026-10-15",
+      hora: "09:00 hs"
+    }
+  ];
+
+  function verVista(vista) {
+    document.getElementById('vista-paciente').style.display = vista === 'paciente' ? 'block' : 'none';
+    document.getElementById('vista-admin').style.display = vista === 'admin' ? 'block' : 'none';
+    document.getElementById('btn-paciente').classList.toggle('active', vista === 'paciente');
+    document.getElementById('btn-admin').classList.toggle('active', vista === 'admin');
+    if(vista === 'admin') renderizarTurnos();
+  }
+
+  function seleccionarSesion(tipo, elem) {
+    document.querySelectorAll('.radio-option').forEach(el => el.classList.remove('selected'));
+    elem.classList.add('selected');
+    elem.querySelector('input').checked = true;
+    document.getElementById('info-domicilio').style.display = tipo === 'domicilio' ? 'block' : 'none';
+  }
+
+  function guardarTurno() {
+    const nombre = document.getElementById('nombre').value;
+    const whatsapp = document.getElementById('whatsapp').value;
+    const diagnostico = document.getElementById('diagnostico').value;
+    const dolor = document.getElementById('dolor').value;
+    const fecha = document.getElementById('fecha').value;
+    const hora = document.getElementById('hora').value;
+
+    if(!nombre || !whatsapp || !fecha) {
+      alert("Por favor, completa Nombre, WhatsApp y Fecha.");
+      return;
+    }
+
+    turnosGuardados.push({ nombre, whatsapp, diagnostico, dolor, sesion: 'Presencial', fecha, hora });
+    alert("¡Turno registrado con éxito en BC Kinesiología!");
+    verVista('admin');
+  }
+
+  function renderizarTurnos() {
+    const cont = document.getElementById('lista-turnos');
+    cont.innerHTML = "";
+    if(turnosGuardados.length === 0) {
+      cont.innerHTML = "<p style='font-size:13px; color:#666;'>No hay turnos agendados aún.</p>";
+      return;
+    }
+
+    turnosGuardados.forEach(t => {
+      cont.innerHTML += `
+        <div class="turno-item">
+          <div class="turno-hora">📅 ${t.fecha} - ⏰ ${t.hora}</div>
+          <div class="turno-paciente">👤 ${t.nombre}</div>
+          <div style="font-size:12px; color:#444;">📋 <strong>Diagnóstico:</strong> ${t.diagnostico || 'Sin especificar'}</div>
+          <div style="font-size:12px; color:#444;">⚡ <strong>Dolor:</strong> ${t.dolor || 'Sin especificar'}</div>
+          <div style="font-size:12px; color:#444;">📞 <strong>WhatsApp:</strong> ${t.whatsapp}</div>
+          <span class="badge">${t.sesion}</span>
+        </div>
+      `;
+    });
+  }
+
+  renderizarTurnos();
+</script>
+
+</body>
+</html>
